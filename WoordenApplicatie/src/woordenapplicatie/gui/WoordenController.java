@@ -65,19 +65,19 @@ public class WoordenController implements Initializable
     @FXML
     private void aantalAction(ActionEvent event)
     {
-         taOutput.setText(woordenManager.aantal(taInput.getText()));
+         taOutput.setText(woordenManager.amount(taInput.getText()));
     }
 
     @FXML
     private void sorteerAction(ActionEvent event)
     {
-         throw new UnsupportedOperationException("Not supported yet."); 
+         taOutput.setText(woordenManager.sort(taInput.getText()));
     }
 
     @FXML
     private void frequentieAction(ActionEvent event)
     {
-         throw new UnsupportedOperationException("Not supported yet."); 
+         taOutput.setText(woordenManager.frequency(taInput.getText()));
     }
 
     @FXML
