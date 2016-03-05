@@ -6,12 +6,11 @@
 package woordenapplicatie.gui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -73,7 +72,7 @@ public class WoordenManager
         TreeMap<String, Integer> treeMap = new TreeMap<>();
         
         String[] words = input.split(" |,|\\.|\n");
-        String result = "";
+        String output = "";
                
         for(String word : words)
         {
@@ -90,44 +89,73 @@ public class WoordenManager
             treeMap.put(word, Collections.frequency(wordsCounted, word));
         }
         
-        treeMap = sortByValue(treeMap);
+        SortedSet result = entriesSortedByValues(treeMap);
         
-        for(Entry<String, Integer> entry : treeMap.entrySet())
+        for(Object entry : result)
         {
-            result += entry.getKey() + "    " + entry.getValue() + "\n";
+            output += entry.toString() + "\n";
         }
-        return result;
+                
+        return output;
     }
     
-    public TreeMap sortByValue(TreeMap treemap)
+    public String concordation(String input)
     {
-        TreeMap sortedMap = new TreeMap(new ValueComparator(treemap));
-        sortedMap.putAll(treemap);
+        ArrayList<String> wordsCounted = new ArrayList<>();
+        HashSet<String> uniqueWords = new HashSet<>();
+        TreeMap<String, String> treeMap = new TreeMap<>();
 
-        return sortedMap;
-    }
-    
-    public class ValueComparator implements Comparator 
-    {
-        TreeMap map;
-        public ValueComparator(TreeMap map)
+        String[] lines = input.split("\n");
+        String[] words = input.split(" |,|\\.|\n");
+        
+        for(String word : words)
         {
-            this.map = map;
+            if(word.length() != 0)
+            {
+                wordsCounted.add(word.trim()); 
+            }
         }
         
-        /**
-         *
-         * @param keyA
-         * @param keyB
-         * @return
-         */
-        @Override
-        public int compare(Object keyA, Object keyB)
+        uniqueWords.addAll(wordsCounted);
+        
+        for(String uniqueWord : uniqueWords)
         {
-            Comparable valueA = (Comparable) map.get(keyA);
-            Comparable valueB = (Comparable) map.get(keyB);
-            System.out.println(valueA +" - "+valueB);
-            return valueA.compareTo(valueB);
+            String occurences = "";
+            int i = 0;
+            
+            for (String line : lines)
+            {
+                i++;
+                
+                if(line.contains(uniqueWord))
+                {
+                    occurences += i + ", ";
+                }
+            }
+            treeMap.put(uniqueWord, occurences);
         }
+        
+        String output = "";
+        
+        for(Entry<String, String> entry : treeMap.entrySet())
+        {
+            output += entry.toString() + System.getProperty("line.separator");
+        }
+        
+        return output;
     }
+    
+    static <K, V extends Comparable<? super V>>
+    SortedSet<Map.Entry<K, V>> entriesSortedByValues(Map<K, V> map)
+    {
+        SortedSet<Map.Entry<K, V>> sortedEntries = new TreeSet<>(
+        (Map.Entry<K, V> e1, Map.Entry<K, V> e2) ->
+        {
+            int res = e1.getValue().compareTo(e2.getValue());
+            return res != 0 ? res : 1;
+        });
+        
+        sortedEntries.addAll(map.entrySet());
+        return sortedEntries;
+    }    
 }
