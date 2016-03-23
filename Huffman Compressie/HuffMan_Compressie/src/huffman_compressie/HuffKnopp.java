@@ -9,57 +9,54 @@ package huffman_compressie;
  *
  * @author Milton
  */
-class HuffKnopp implements Comparable
-{
+class HuffKnopp implements Comparable {
+
     public Character character;
     public Integer frequency;
     public HuffKnopp leftChild;
     public HuffKnopp rightChild;
-    public HuffKnopp parent;
-    
-    public HuffKnopp(Character character, int frequency)
-    {
+
+    public HuffKnopp(Character character, int frequency) {
         this.character = character;
         this.frequency = frequency;
     }
-    
+
+    public HuffKnopp(HuffKnopp leftChild, HuffKnopp rightChild) {
+        this.leftChild = leftChild;
+        this.rightChild = rightChild;
+        frequency = leftChild.frequency + rightChild.frequency;
+        character = '*';
+    }
+
     @Override
-    public String toString()
-    {
+    public String toString() {
         String output = character + " - " + frequency;
-        
-//        if(leftChild != null)
-//        {
-//            output += " | " + leftChild.toString();
-//        }
-//        
-//        if(rightChild != null)
-//        {
-//            output += " | " + rightChild.toString();
-//        }
-            
-        if(parent != null)
+
+        if(leftChild != null)
         {
-            output += " | " + parent.toString();
+            output += " | " + leftChild.toString();
         }
         
+        if(rightChild != null)
+        {
+            output += " | " + rightChild.toString();
+        }
+//        if (parent != null) {
+//            output += " | " + parent.toString();
+//        }
+
         return output;
     }
 
     @Override
-    public int compareTo(Object o2)
-    {
-        if (((HuffKnopp)o2).frequency < this.frequency)
-        {
-            return 1;
-        }
-        else if (((HuffKnopp)o2).frequency > this.frequency)
-        {
-            return -1;
-        }
-        else
-        {
-            return 0;
-        }
+    public int compareTo(Object o2) {
+//        if (((HuffKnopp) o2).frequency < this.frequency) {
+//            return 1;
+//        } else if (((HuffKnopp) o2).frequency > this.frequency) {
+//            return -1;
+//        } else {
+//            return 0;
+//        }
+        return this.frequency - ((HuffKnopp)o2).frequency;
     }
 }
