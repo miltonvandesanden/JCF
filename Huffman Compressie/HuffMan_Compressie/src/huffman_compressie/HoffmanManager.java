@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 /**
  *
@@ -22,31 +23,44 @@ public class HoffmanManager
     private String input = "superaardappelbananensplit";
     private PriorityQueue<HuffKnopp> charFrequency;
     private PriorityQueue<HuffKnopp> huffTree = new PriorityQueue<>();
-    
     private HashMap<Character, String> codes = new HashMap<>();
-    private HuffKnopp root;
     
     private ArrayList<String> encodedMessage;
     private String decodedMessage;
     
     public HoffmanManager()
-    {
-        System.out.println(input);
-        
+    {   
+        System.out.println("Calculating frequencies");
         charFrequency = frequency(input);
-        root = generateHuffTree();
-        lettercodes(root ,"");
-                
-        encodedMessage = encodeMessage(input);
-        System.out.println(encodedMessage);
-        
-        String encodedMessageString = "";
-        for(String code : encodedMessage)
+        for(HuffKnopp huffKnopp : charFrequency)
         {
-            encodedMessageString += code;
+            System.out.println(huffKnopp.toString());
         }
         
-        decodedMessage = decodeMessage(encodedMessageString);
+        System.out.println("______________");
+        
+        System.out.println("generate HuffTree");
+        generateHuffTree();
+        
+        for(HuffKnopp huffKnopp : huffTree)
+        {
+            System.out.println(huffKnopp.toString());
+        }
+        
+        System.out.println("encoding characters");
+        lettercodes();
+        
+        for(Entry<Character, String> entry : codes.entrySet())
+        {
+            System.out.println(entry.toString());
+        }
+        
+        encodedMessage = encodeMessage(input);
+        
+        System.out.println(encodedMessage);
+        
+        decodedMessage = decodeMessage(encodedMessage);
+        
         System.out.println(decodedMessage);
     }
     
@@ -66,25 +80,26 @@ public class HoffmanManager
         
         for (Character character : wordsUnique)
         {
-            frequencies.add(new HuffKnopp(character, Collections.frequency(wordsCounted, character)));
+            list.add(new HuffKnopp(character, Collections.frequency(wordsCounted, character)));
         }
         
-        //list.sort(null);
-        //frequencies.addAll(list);
+        list.sort(null);
+        frequencies.addAll(list);
         return frequencies;
     }
     
-    private HuffKnopp generateHuffTree()
+    private void generateHuffTree()
     {
         for(int i = charFrequency.size(); i > 1; i--)
         {
             HuffKnopp leftChild = charFrequency.poll();
             HuffKnopp rightChild = charFrequency.poll();
-            HuffKnopp parent = new HuffKnopp( leftChild , rightChild);
+            HuffKnopp parent = new HuffKnopp('*', leftChild.frequency + leftChild.frequency);
             
-           
-//            leftChild.parent = parent;
-//            rightChild.parent = parent;
+            parent.leftChild = leftChild;
+            parent.rightChild = rightChild;
+            leftChild.parent = parent;
+            rightChild.parent = parent;
             
             charFrequency.add(parent);
             
@@ -92,24 +107,46 @@ public class HoffmanManager
             huffTree.add(rightChild);
             huffTree.add(parent);
         }
-        
-        return charFrequency.poll();
     }
     
-    private void lettercodes(HuffKnopp huffKnopp, String code)
-    {        
-        if(huffKnopp.leftChild != null)
+    private void lettercodes()
+    {
+        for(char character : input.toCharArray())
         {
-            lettercodes(huffKnopp.leftChild, code += 0);
+            String code = "";
+            
+            for(HuffKnopp huffKnopp : huffTree)
+            {
+                if(huffKnopp.character == character)
+                {
+                    code = parentCode(huffKnopp);
+                }
+            }
+            
+            codes.put(character, code);
         }
-        if(huffKnopp.rightChild != null)
-        {
-            lettercodes(huffKnopp.rightChild, code += 1);
-        }
-        
-        codes.put(huffKnopp.character, code);
     }
     
+    private String parentCode(HuffKnopp huffKnopp)
+    {
+        String code = "";
+        
+        if(huffKnopp.parent.leftChild == huffKnopp)
+        {
+            code += 0;
+        }
+        else
+        {
+            code += 1;
+        }
+        
+        if(huffKnopp.parent.parent != null)
+        {
+            code += parentCode(huffKnopp.parent);
+        }
+        
+        return new StringBuilder(code).reverse().toString();
+    }
     
     private ArrayList<String> encodeMessage(String input)
     {
@@ -122,63 +159,21 @@ public class HoffmanManager
         return encodedMessage;
     }
     
-    private String decodeMessage(String encodedMessage, HuffKnopp huffKnopp)
+    private String decodeMessage(ArrayList<String> encodedMessage)
     {
+        String decodedMessage = "";
         
-        String character = "";
-        
-        for(char bit : encodedMessage.toCharArray())
+        for(String code : encodedMessage)
         {
-            if(bit == 0)
+            for(Entry<Character, String> entry : codes.entrySet())
             {
-                decodeMessage(encodedMessage.substring(1), huffKnopp.leftChild);
-            }
-            if(bit == 1)
-            {
-                
+                if(entry.getValue() == code)
+                {
+                    decodedMessage += entry.getKey();
+                }
             }
         }
-//        String decodedMessage = "";
-//        
-//        for(String code : encodedMessage)
-//        {
-//            for(Entry<Character, String> entry : codes.entrySet())
-//            {
-//                if(entry.getValue() == code)
-//                {
-//                    decodedMessage += entry.getKey();
-//                }
-//            }
-//        }
-//        
-//        return decodedMessage;
         
-//        String decodedMessage = "";
-//        for(String code : encodedMessage)
-//        {
-//            decodedMessage += decodeCode(code, root);
-//        }
-//        return decodedMessage;
+        return decodedMessage;
     }
-    
-//    private String decodeCode(String code, HuffKnopp huffKnopp)
-//    {
-//        String character = "";
-//        character = huffKnopp.character.toString();
-//        
-//        for(char bit : code.toCharArray())
-//        {
-//
-//            if(bit == '0' && huffKnopp.leftChild != null)
-//            {    
-//                character = decodeCode(code.substring(1), huffKnopp.leftChild);
-//            }
-//            if(bit == '1' && huffKnopp.rightChild != null)
-//            {
-//                character = decodeCode(code.substring(1), huffKnopp.rightChild);
-//            }
-//        }
-//        
-//        return character;
-//    }
 }
