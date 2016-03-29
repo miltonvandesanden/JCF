@@ -9,18 +9,26 @@ package huffman_compressie;
  *
  * @author Milton
  */
-class HuffKnopp implements Comparable
+class HuffKnopp implements Comparable<HuffKnopp>
 {
     public Character character;
     public Integer frequency;
     public HuffKnopp leftChild;
     public HuffKnopp rightChild;
-    public HuffKnopp parent;
     
     public HuffKnopp(Character character, int frequency)
     {
         this.character = character;
         this.frequency = frequency;
+    }
+    
+    public HuffKnopp(HuffKnopp leftChild, HuffKnopp rightChild)
+    {
+        character = '*';
+        frequency = leftChild.frequency + rightChild.frequency;
+        
+        this.leftChild = leftChild;
+        this.rightChild = rightChild;
     }
     
     @Override
@@ -38,28 +46,12 @@ class HuffKnopp implements Comparable
 //            output += " | " + rightChild.toString();
 //        }
             
-        if(parent != null)
-        {
-            output += " | " + parent.toString();
-        }
-        
         return output;
     }
 
     @Override
-    public int compareTo(Object o2)
+    public int compareTo(HuffKnopp o2)
     {
-        if (((HuffKnopp)o2).frequency < this.frequency)
-        {
-            return 1;
-        }
-        else if (((HuffKnopp)o2).frequency > this.frequency)
-        {
-            return -1;
-        }
-        else
-        {
-            return 0;
-        }
+        return this.frequency - o2.frequency;
     }
 }
