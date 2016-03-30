@@ -5,6 +5,7 @@
  */
 package opdracht.pkg3;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -40,7 +41,6 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handleButtonAction(ActionEvent event) {
         System.out.println("You clicked me!");
-        label.setText("Hello World!");
     }
     
     @Override
@@ -50,13 +50,28 @@ public class FXMLDocumentController implements Initializable {
     }    
     public void add(ActionEvent event)
     {
-        Werknemer employee;
-        if(!tbName.getText().isEmpty())
-        {
-            employee = manager.checkEmployee(tbName.getText());
-            //manager.addEmployee(tbName.getText()) 
-        }
+//        try
+//        {
+            if(!tbName.getText().isEmpty())
+            {
+                System.out.println("You clicked me!");
+                if(tbWorksFor.getText().isEmpty())
+                {
+                    manager.checkEmployee(tbName.getText(), "");
+                }
+                else
+                {
+                    manager.checkEmployee(tbName.getText(), tbWorksFor.getText());
+                }
+            }
+            
+//        }
+//        catch(InvocationTargetException ex)
+//        {
+//            System.err.println("An InvocationTargetException was caught!");
+//            Throwable cause = ex.getCause();
+//            
+//        }
         
     }
-    
 }

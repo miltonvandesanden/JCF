@@ -6,6 +6,8 @@
 package opdracht.pkg3;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -35,16 +37,22 @@ public class Opdracht3 extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    public Werknemer checkEmployee(String name)
-    {        
-        for(Werknemer employee : employees)
+    public void checkEmployee(String name, String worksFor)
+    {
+        boolean exists = false;
+        for(int i = 0; i <= employees.size(); i++)
         {
-            if(employee.name.equals(name))
+            if(employees.get(i).name.equals(name))
             {
-                
-            }
+                exists = true;
+                employees.get(i).worksFor = worksFor;
+            }           
         }
-        return null;
+        if(!exists)
+        {
+            Werknemer employee = new Werknemer(name, worksFor);
+            employees.add(employee);
+        }
     }
     public void addEmployee()
     {

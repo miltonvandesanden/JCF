@@ -13,8 +13,8 @@ package opdracht.pkg3;
 public class Werknemer {
     
     public String name;
-    public Werknemer worksFor;
-    public Werknemer(String name, Werknemer worksFor)
+    public String worksFor;
+    public Werknemer(String name, String worksFor)
     {
         this.name = name;
         this.worksFor = worksFor;
