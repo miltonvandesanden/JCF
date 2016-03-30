@@ -5,6 +5,8 @@
  */
 package opdracht.pkg3;
 
+import javafx.beans.property.SimpleStringProperty;
+
 /**
  *
  * @author Stefan
@@ -12,15 +14,42 @@ package opdracht.pkg3;
 
 public class Werknemer {
     
-    public String name;
-    public String worksFor;
+    public SimpleStringProperty name;
+    public SimpleStringProperty worksFor;
+    
     public Werknemer(String name, String worksFor)
     {
-        this.name = name;
-        this.worksFor = worksFor;
+        this.name = new SimpleStringProperty(name);
+        this.worksFor = new SimpleStringProperty(worksFor);
     }
     public Werknemer(String name)
     {
-        this.name = name;
+        this.name = new SimpleStringProperty(name);
+    }
+    
+    public String getName()
+    {
+        return name.get();
+    }
+    
+    public void setName(String name)
+    {
+        this.name = new SimpleStringProperty(name);
+    }
+    
+    public String getWorksFor()
+    {
+        return worksFor.get();
+    }
+    
+    public void setWorksFor(String worksFor)
+    {
+        this.worksFor = new SimpleStringProperty(worksFor);
+    }
+    
+    @Override
+    public String toString()
+    {
+        return name + " - " + worksFor;
     }
 }

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -37,26 +39,37 @@ public class Opdracht3 extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    public void checkEmployee(String name, String worksFor)
+    public ObservableList<Werknemer> checkEmployee(String name, String worksFor)
     {
         boolean exists = false;
-        for(int i = 0; i <= employees.size(); i++)
+        if(employees.size() > 0)
         {
-            if(employees.get(i).name.equals(name))
+            for(int i = 0; i < employees.size(); i++)
             {
-                exists = true;
-                employees.get(i).worksFor = worksFor;
-            }           
+                if(employees.get(i).getName().equals(name))
+                {
+                    exists = true;
+                    employees.get(i).setWorksFor(worksFor);
+                }           
+            }
         }
         if(!exists)
         {
             Werknemer employee = new Werknemer(name, worksFor);
             employees.add(employee);
         }
-    }
-    public void addEmployee()
-    {
+        for(Werknemer employee : employees)
+        {
+            System.out.println(employee.toString());
+        }
         
+        System.out.println("_______________");
+        
+        for(Werknemer employee : FXCollections.observableArrayList(employees))
+        {
+            System.out.println(employee.toString());
+        }
+        
+        return FXCollections.observableArrayList(employees);
     }
-    
 }
